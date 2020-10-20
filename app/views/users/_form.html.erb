@@ -1,0 +1,39 @@
+<%= form_with(model: user, local: true) do |form| %>
+  <% if user.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(user.errors.count, "error") %> prohibited this user from being saved:</h2>
+
+      <ul>
+        <% user.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= form.text_field :name, placeholder: "Name", id: 'name'%>
+    <br/> 
+    <br/> 
+    <%= form.text_field :phone_number, placeholder: "Phone number",class: 'test' ,autocomplete: "phone Number", 'data-mask': '000-000-0000'%>
+    <br/> 
+    <br/> 
+    <%= form.file_field :resume, accept: 'application/pdf' %>
+    <br/> 
+    <br/> 
+    <%= form.submit %>
+  </div>
+<% end %>
+
+<script>
+  $(function() {
+    $('body').on('keydown', '#name', function(e) {
+      console.log(this.value);
+      if (e.which === 32 &&  e.target.selectionStart === 0) {
+        return false;
+      }  
+    });
+  }); 
+  
+</script>
+
