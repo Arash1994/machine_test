@@ -1,8 +1,8 @@
 class User < ApplicationRecord
-	has_and_belongs_to_many :conversations
-	has_many :messages
-	has_many :clear_conversation_histories
-	has_one_attached :resume
+	has_and_belongs_to_many :conversations, dependent: :destroy
+	has_many :messages, dependent: :destroy
+	has_many :clear_conversation_histories, dependent: :destroy
+	has_one_attached :resume, dependent: :destroy
 	# validates :resume, presence: true, blob: {content_type: ['application/pdf'] }
 	validate :validate_resume
 

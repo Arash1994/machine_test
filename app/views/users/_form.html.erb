@@ -15,7 +15,7 @@
     <%= form.text_field :name, placeholder: "Name", id: 'name'%>
     <br/> 
     <br/> 
-    <%= form.text_field :phone_number, placeholder: "Phone number",class: 'test' ,autocomplete: "phone Number", 'data-mask': '000-000-0000'%>
+    <%= form.telephone_field :phone_number, placeholder: "Phone number",class: 'test' ,autocomplete: "phone Number"%>
     <br/> 
     <br/> 
     <%= form.file_field :resume, accept: 'application/pdf' %>
@@ -28,10 +28,20 @@
 <script>
   $(function() {
     $('body').on('keydown', '#name', function(e) {
-      console.log(this.value);
       if (e.which === 32 &&  e.target.selectionStart === 0) {
         return false;
       }  
+    });
+
+    $("#user_phone_number").blur(function(e) {
+      number = this.value.replace(/-/g, '');
+      this.value = number
+    }).blur(function() {
+      number = this.value
+      if (number.length > 3){
+        number = number.substring(0,3) + "-" + number.substring(3, 6)+ "-" + number.substring(6, number.length);
+        this.value = number
+      }
     });
   }); 
   

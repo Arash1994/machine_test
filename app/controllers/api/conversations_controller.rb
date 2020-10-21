@@ -1,6 +1,6 @@
 class Api::ConversationsController < ApplicationController
 	skip_before_action :verify_authenticity_token
-	before_action :set_current_user, only: [:index, :send_sms, :clear_conversation, :message_history]
+	before_action :set_current_user, only: [:index, :create, :send_sms, :clear_conversation, :message_history]
 	before_action :set_conversation, only: [:message_history, :send_sms, :clear_conversation]
 
 	#GET: /api/conversations
@@ -16,6 +16,30 @@ class Api::ConversationsController < ApplicationController
 					}
 				end
 		}
+	end
+	
+	def create
+		contact_user = User.find(conversation_params[:contact_user_id])
+		@conversation = @current_user.conversations.select{|x| x.user_ids.include? contact_user.id}.first
+		if @conversation.present?
+			message = 'Conversation already present'
+		else
+			@conversation = Conversation.create(name: "#{@current_user.name}-#{contact_user.name}", user_ids: [@current_user.id, contact_user.id])
+			message = 'Created successfully'
+		end
+		if @conversation.present?
+			render json:  {
+									 sucess: :true,
+									 message: message,
+									 data: @conversation
+									}
+		else
+			render json:  {
+									 sucess: :false,
+									 message: @conversation.errors.full_messages.join(','),
+									 data: @conversation
+									}
+		end
 	end
 
 	#GET: /api/conversations/:conversation_id/message_history
@@ -69,6 +93,10 @@ class Api::ConversationsController < ApplicationController
 	
 	def set_conversation
 		@conversation = Conversation.find(params[:conversation_id])
+	end
+
+	def conversation_params
+		params.permit(:name, :contact_user_id, :current_user_id)
 	end
 
 end
